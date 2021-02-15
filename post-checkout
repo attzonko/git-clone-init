@@ -11,8 +11,9 @@ function warn {
 
 email="$(git config --local user.email)"
 name="$(git config --local user.name)"
+signingkey="$(git config --local user.signingkey)"
 
-if [[ $1 != "0000000000000000000000000000000000000000" || -n $email || -n $name ]]; then
+if [[ $1 != "0000000000000000000000000000000000000000" || -n $email || -n $name || -n $signingkey ]]; then
   exit 0
 fi
 
@@ -33,8 +34,8 @@ cat << INPUT > ~/.git-clone-init
 #!/bin/bash
 
 case "\$url" in
-  *@github.com:*    ) email=""; name="";;
-  *//github.com/*   ) email=""; name="";;
+  *@github.com:*    ) email=""; name=""; signingkey="";;
+  *//github.com/*   ) email=""; name=""; signingkey="";;
 esac
 INPUT
   warn "\nMissing file ~/.git-clone-init. Template created..."
@@ -49,5 +50,6 @@ fi
 
 git config --local user.email "$email"
 git config --local user.name "$name"
+git config --local user.signingkey "$signingkey"
 
-echo -e "\nLocal identity for ${PWD##*/} set to \"$name <$email>\""
+echo -e "\nLocal identity for ${PWD##*/} set to \"$name <$email>\" with Signing Key:\"$signingkey\""
